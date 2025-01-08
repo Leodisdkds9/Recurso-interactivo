@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Normas Educativas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* 1cm = 37.8px */
+    .height-15cm {
+      height: 567px; /* 15cm * 37.8px */
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen p-4">
+  <!-- Audio Autoplay -->
+  <audio id="backgroundAudio" autoplay loop>
+    <source src="https://archive.org/download/video-sin-titulo-hecho-con-clipchamp_20250108/Video%20sin%20título%20‐%20Hecho%20con%20Clipchamp.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Fondo -->
+  <div class="absolute top-0 left-0 w-full h-full -z-10 opacity-20">
+    <div class="absolute top-0 left-0 w-32 h-32 bg-purple-500 rounded-full blur-3xl"></div>
+    <div class="absolute top-1/2 right-0 w-32 h-32 bg-blue-500 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 left-1/4 w-32 h-32 bg-green-500 rounded-full blur-3xl"></div>
+  </div>
+
+  <!-- Introducción -->
+  <div class="mb-8 text-center relative">
+    <div class="relative rounded-2xl overflow-hidden shadow-2xl bg-white">
+      <img 
+        src="https://i.ibb.co/fvw4sLW/Despacho.jpg" 
+        alt="Despacho"
+        class="w-full object-cover h-[400px]"
+      />
+      <img 
+        src="https://i.ibb.co/f8HfdjK/Lic-Alexander.jpg" 
+        alt="Lic. Alexander"
+        class="absolute bottom-0 right-8 h-64 drop-shadow-2xl"
+      />
+      <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
+        <h2 class="text-3xl font-bold text-white mb-2">
+          Hola, mi nombre es el Lic. Alexander
+        </h2>
+        <p class="text-xl text-white/90">
+          ¿Sobre qué tipo de norma te gustaría que te hable el día de hoy?
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Selección de Normas -->
+  <div id="norm-buttons" class="grid grid-cols-2 gap-6 mb-8">
+    <!-- Botones generados dinámicamente -->
+  </div>
+
+  <!-- Detalles de la Norma Seleccionada -->
+  <div id="norm-details" class="hidden p-6 shadow-2xl bg-white/80 backdrop-blur-lg rounded-2xl border-0"></div>
+
+  <!-- Modal para imagen ampliada -->
+  <div id="image-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
+    <div class="relative">
+      <img id="modal-image" src="" alt="" class="height-15cm object-contain rounded-xl">
+      <button onclick="closeImageModal()" class="absolute top-4 right-4 text-white text-4xl hover:text-gray-300">&times;</button>
+    </div>
+  </div>
+
+  <!-- Diálogo -->
+  <div id="dialog" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded-xl shadow-2xl w-96">
+      <h3 id="dialog-title" class="text-2xl font-bold mb-4"></h3>
+      <div id="dialog-content" class="text-lg text-slate-700"></div>
+      <button onclick="closeDialog()" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- Botón de Referencias -->
+  <div class="mt-8 text-center">
+    <button onclick="openDialog('Referencias', '- Claude IA<br>- Canva<br>- Natural Reader')" 
+      class="p-4 bg-gradient-to-r from-gray-500 to-gray-700 text-white rounded-xl hover:scale-105 transition-all duration-300">
+      Referencias
+    </button>
+  </div>
+
+  <script>
+    const normsData = {
+      moral: {
+        title: 'Normas Morales',
+        color: 'from-purple-500 to-pink-500',
+        characteristics: [
+          'Autónoma: Surge de la propia conciencia del individuo',
+          'Unilateral: Solo involucra a la persona que se impone la norma',
+          'Interna: Se origina y aplica en el interior de la persona',
+          'Incoercible: No puede imponerse por la fuerza'
+        ],
+        author: 'La propia persona establece sus normas basadas en sus valores y principios personales.',
+        sanction: 'El remordimiento actúa como mecanismo interno cuando no se cumplen los principios morales.',
+        comic: 'https://i.ibb.co/K6gwKDT/Comic-Moral.jpg'
+      },
+      social: {
+        title: 'Normas Sociales',
+        color: 'from-orange-500 to-yellow-500',
+        characteristics: [
+          'Heterónoma: Proviene de la sociedad, no del individuo',
+          'Unilateral: Afecta al comportamiento individual en sociedad',
+          'Exterior: Se manifiesta en el comportamiento social visible',
+          'Incoercible: No puede imponerse mediante la fuerza física'
+        ],
+        author: 'La sociedad establece estas normas a través de costumbres y convenciones.',
+        sanction: 'El rechazo social y la desaprobación actúan como mecanismos de control.',
+        comic: 'https://i.ibb.co/6NJqNdC/Comic-Social.jpg'
+      },
+      religious: {
+        title: 'Normas Religiosas',
+        color: 'from-cyan-500 to-blue-500',
+        characteristics: [
+          'Heterónoma: Proviene de una autoridad divina o religiosa',
+          'Unilateral: Se aplica a los creyentes de forma individual',
+          'Interior: Afecta a las creencias y convicciones personales',
+          'Incoercible: No puede imponerse por medios físicos'
+        ],
+        author: 'Estas normas provienen de textos sagrados o autoridades religiosas que interpretan la voluntad divina.',
+        sanction: 'Las consecuencias espirituales o divinas son consideradas como castigo por el incumplimiento.',
+        comic: 'https://i.ibb.co/p0g3p6x/Comic-Religiosa.jpg'
+      },
+      juridical: {
+        title: 'Normas Jurídicas',
+        color: 'from-green-500 to-emerald-500',
+        characteristics: [
+          'Heterónoma: Proviene del Estado, no del individuo',
+          'Bilateral: Establece derechos y obligaciones recíprocas',
+          'Exterior: Se aplica a conductas observables',
+          'Coercible: Puede imponerse mediante la fuerza del Estado'
+        ],
+        author: 'Las normas jurídicas son creadas por instituciones estatales autorizadas como el poder legislativo.',
+        sanction: 'El incumplimiento conlleva consecuencias legales como multas, prisión u otras penas establecidas por la ley.',
+        comic: 'https://i.ibb.co/jWYqWsF/Comic-Juridica.jpg'
+      }
+    };
+
+    // Renderizar botones de normas
+    const normButtons = document.getElementById('norm-buttons');
+    Object.entries(normsData).forEach(([key, data]) => {
+      const button = document.createElement('button');
+      button.className = `p-6 text-lg font-semibold bg-gradient-to-r ${data.color} 
+                          hover:scale-105 transform transition-all duration-300 text-white rounded-xl shadow-lg`;
+      button.textContent = data.title;
+      button.onclick = () => showNormDetails(key);
+      normButtons.appendChild(button);
+    });
+
+    // Mostrar detalles de la norma seleccionada
+    const normDetails = document.getElementById('norm-details');
+    function showNormDetails(normKey) {
+      const data = normsData[normKey];
+      normDetails.innerHTML = `
+        <h3 class="text-2xl font-bold mb-6 text-center bg-gradient-to-r from-slate-700 to-slate-900 bg-clip-text text-transparent">
+          ${data.title}
+        </h3>
+        <div class="mb-8">
+          <div class="flex justify-center mb-6">
+            <img src="${data.comic}" 
+                 alt="${data.title} Comic" 
+                 class="h-[5cm] rounded-xl object-contain cursor-pointer hover:opacity-90 transition-opacity"
+                 onclick="openImageModal('${data.comic}', '${data.title} Comic')">
+          </div>
+          <h4 class="text-xl font-semibold mb-4 text-slate-800">Características:</h4>
+          <ul class="space-y-4">
+            ${data.characteristics.map(char => `
+              <li class="flex items-start gap-3">
+                <span class="inline-block w-2 h-2 mt-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500"></span>
+                <span class="text-slate-700">${char}</span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+        <div class="grid grid-cols-2 gap-6">
+          <button onclick="openDialog('Autor', '${data.author}')"
+            class="p-4 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-xl hover:scale-105 transition-all duration-300">
+            Autor
+          </button>
+          <button onclick="openDialog('Sanción', '${data.sanction}')"
+            class="p-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-xl hover:scale-105 transition-all duration-300">
+            Sanción
+          </button>
+        </div>
+      `;
+      normDetails.classList.remove('hidden');
+    }
+
+    // Funciones para el modal de imagen
+    function openImageModal(src, alt) {
+      const modal = document.getElementById('image-modal');
+      const modalImage = document.getElementById('modal-image');
+      modalImage.src = src;
+      modalImage.alt = alt;
+      modal.classList.remove('hidden');
+    }
+
+    function closeImageModal() {
+      const modal = document.getElementById('image-modal');
+      modal.classList.add('hidden');
+    }
+
+    // Mostrar diálogo
+    const dialog = document.getElementById('dialog');
+    const dialogTitle = document.getElementById('dialog-title');
+    const dialogContent = document.getElementById('dialog-content');
+    function openDialog(title, content) {
+      dialogTitle.textContent = title;
+      dialogContent.innerHTML = content;
+      dialog.classList.remove('hidden');
+    }
+
+    // Cerrar diálogo
+    function closeDialog() {
+      dialog.classList.add('hidden');
+    }
+  </script>
+</body>
+</html>
